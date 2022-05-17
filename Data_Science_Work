@@ -1,1 +1,503 @@
 
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Assignment #5\n",
+    "\n",
+    "In this assignment we will start plotting data. You may choose to complete this assignment in either _R_ or _Python_. Please designate your choice in the first box. \n",
+    "\n",
+    "__Make sure your kernel is selected for the language you choose.__\n",
+    "\n",
+    "We will be using the county demographics data set on the server at _/shared/dsc495/county_demographics.csv_. \n",
+    "\n",
+    "You must complete the entire assignment in **1** language. \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Programming language:** "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# import statements\n",
+    "#Chris Cole\n",
+    "import pandas as pd\n",
+    "import statistics as st\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Q1: Read in the county demographics data. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>County</th>\n",
+       "      <th>State</th>\n",
+       "      <th>Age.Percent 65 and Older</th>\n",
+       "      <th>Age.Percent Under 18 Years</th>\n",
+       "      <th>Age.Percent Under 5 Years</th>\n",
+       "      <th>Education.Bachelor's Degree or Higher</th>\n",
+       "      <th>Education.High School or Higher</th>\n",
+       "      <th>Employment.Nonemployer Establishments</th>\n",
+       "      <th>Employment.Private Non-farm Employment</th>\n",
+       "      <th>Employment.Private Non-farm Employment Percent Change</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Sales.Merchant Wholesaler Sales</th>\n",
+       "      <th>Sales.Retail Sales</th>\n",
+       "      <th>Sales.Retail Sales per Capita</th>\n",
+       "      <th>Employment.Firms.American Indian-Owned</th>\n",
+       "      <th>Employment.Firms.Asian-Owned</th>\n",
+       "      <th>Employment.Firms.Black-Owned</th>\n",
+       "      <th>Employment.Firms.Hispanic-Owned</th>\n",
+       "      <th>Employment.Firms.Native Hawaiian and Other Pacific Islander-Owned</th>\n",
+       "      <th>Employment.Firms.Total</th>\n",
+       "      <th>Employment.Firms.Women-Owned</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>3138</th>\n",
+       "      <td>Sweetwater County</td>\n",
+       "      <td>WY</td>\n",
+       "      <td>9.5</td>\n",
+       "      <td>27.0</td>\n",
+       "      <td>7.3</td>\n",
+       "      <td>18.1</td>\n",
+       "      <td>91.0</td>\n",
+       "      <td>2165</td>\n",
+       "      <td>17053</td>\n",
+       "      <td>-2.8</td>\n",
+       "      <td>...</td>\n",
+       "      <td>4374</td>\n",
+       "      <td>8981</td>\n",
+       "      <td>22843</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.7</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>3.8</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>4052</td>\n",
+       "      <td>27.2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3139</th>\n",
+       "      <td>Teton County</td>\n",
+       "      <td>WY</td>\n",
+       "      <td>12.2</td>\n",
+       "      <td>19.1</td>\n",
+       "      <td>5.7</td>\n",
+       "      <td>48.7</td>\n",
+       "      <td>96.8</td>\n",
+       "      <td>4609</td>\n",
+       "      <td>15357</td>\n",
+       "      <td>0.3</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>5156</td>\n",
+       "      <td>25688</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.5</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>3.3</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>5974</td>\n",
+       "      <td>25.3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3140</th>\n",
+       "      <td>Uinta County</td>\n",
+       "      <td>WY</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>29.8</td>\n",
+       "      <td>7.6</td>\n",
+       "      <td>18.9</td>\n",
+       "      <td>89.2</td>\n",
+       "      <td>1366</td>\n",
+       "      <td>7712</td>\n",
+       "      <td>-1.6</td>\n",
+       "      <td>...</td>\n",
+       "      <td>1593</td>\n",
+       "      <td>4139</td>\n",
+       "      <td>20626</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>2.2</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>1983</td>\n",
+       "      <td>15.9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3141</th>\n",
+       "      <td>Washakie County</td>\n",
+       "      <td>WY</td>\n",
+       "      <td>20.1</td>\n",
+       "      <td>23.9</td>\n",
+       "      <td>5.5</td>\n",
+       "      <td>23.6</td>\n",
+       "      <td>90.5</td>\n",
+       "      <td>665</td>\n",
+       "      <td>2986</td>\n",
+       "      <td>-2.6</td>\n",
+       "      <td>...</td>\n",
+       "      <td>121</td>\n",
+       "      <td>983</td>\n",
+       "      <td>12596</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>845</td>\n",
+       "      <td>26.9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3142</th>\n",
+       "      <td>Weston County</td>\n",
+       "      <td>WY</td>\n",
+       "      <td>18.1</td>\n",
+       "      <td>21.6</td>\n",
+       "      <td>6.5</td>\n",
+       "      <td>17.2</td>\n",
+       "      <td>90.2</td>\n",
+       "      <td>576</td>\n",
+       "      <td>1668</td>\n",
+       "      <td>1.3</td>\n",
+       "      <td>...</td>\n",
+       "      <td>115</td>\n",
+       "      <td>643</td>\n",
+       "      <td>9395</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>810</td>\n",
+       "      <td>29.3</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 52 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                 County State  Age.Percent 65 and Older  \\\n",
+       "3138  Sweetwater County    WY                       9.5   \n",
+       "3139       Teton County    WY                      12.2   \n",
+       "3140       Uinta County    WY                      11.0   \n",
+       "3141    Washakie County    WY                      20.1   \n",
+       "3142      Weston County    WY                      18.1   \n",
+       "\n",
+       "      Age.Percent Under 18 Years  Age.Percent Under 5 Years  \\\n",
+       "3138                        27.0                        7.3   \n",
+       "3139                        19.1                        5.7   \n",
+       "3140                        29.8                        7.6   \n",
+       "3141                        23.9                        5.5   \n",
+       "3142                        21.6                        6.5   \n",
+       "\n",
+       "      Education.Bachelor's Degree or Higher  Education.High School or Higher  \\\n",
+       "3138                                   18.1                             91.0   \n",
+       "3139                                   48.7                             96.8   \n",
+       "3140                                   18.9                             89.2   \n",
+       "3141                                   23.6                             90.5   \n",
+       "3142                                   17.2                             90.2   \n",
+       "\n",
+       "      Employment.Nonemployer Establishments  \\\n",
+       "3138                                   2165   \n",
+       "3139                                   4609   \n",
+       "3140                                   1366   \n",
+       "3141                                    665   \n",
+       "3142                                    576   \n",
+       "\n",
+       "      Employment.Private Non-farm Employment  \\\n",
+       "3138                                   17053   \n",
+       "3139                                   15357   \n",
+       "3140                                    7712   \n",
+       "3141                                    2986   \n",
+       "3142                                    1668   \n",
+       "\n",
+       "      Employment.Private Non-farm Employment Percent Change  ...  \\\n",
+       "3138                                               -2.8      ...   \n",
+       "3139                                                0.3      ...   \n",
+       "3140                                               -1.6      ...   \n",
+       "3141                                               -2.6      ...   \n",
+       "3142                                                1.3      ...   \n",
+       "\n",
+       "      Sales.Merchant Wholesaler Sales  Sales.Retail Sales  \\\n",
+       "3138                             4374                8981   \n",
+       "3139                                0                5156   \n",
+       "3140                             1593                4139   \n",
+       "3141                              121                 983   \n",
+       "3142                              115                 643   \n",
+       "\n",
+       "      Sales.Retail Sales per Capita  Employment.Firms.American Indian-Owned  \\\n",
+       "3138                          22843                                     0.0   \n",
+       "3139                          25688                                     0.0   \n",
+       "3140                          20626                                     0.0   \n",
+       "3141                          12596                                     0.0   \n",
+       "3142                           9395                                     0.0   \n",
+       "\n",
+       "      Employment.Firms.Asian-Owned  Employment.Firms.Black-Owned  \\\n",
+       "3138                           0.7                           0.0   \n",
+       "3139                           0.5                           0.0   \n",
+       "3140                           0.0                           0.0   \n",
+       "3141                           0.0                           0.0   \n",
+       "3142                           0.0                           0.0   \n",
+       "\n",
+       "      Employment.Firms.Hispanic-Owned  \\\n",
+       "3138                              3.8   \n",
+       "3139                              3.3   \n",
+       "3140                              2.2   \n",
+       "3141                              0.0   \n",
+       "3142                              0.0   \n",
+       "\n",
+       "      Employment.Firms.Native Hawaiian and Other Pacific Islander-Owned  \\\n",
+       "3138                                                0.0                   \n",
+       "3139                                                0.0                   \n",
+       "3140                                                0.0                   \n",
+       "3141                                                0.0                   \n",
+       "3142                                                0.0                   \n",
+       "\n",
+       "      Employment.Firms.Total  Employment.Firms.Women-Owned  \n",
+       "3138                    4052                          27.2  \n",
+       "3139                    5974                          25.3  \n",
+       "3140                    1983                          15.9  \n",
+       "3141                     845                          26.9  \n",
+       "3142                     810                          29.3  \n",
+       "\n",
+       "[5 rows x 52 columns]"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_csv(\"/shared/dsc495/county_demographics.csv\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Q2: Select a column you are interested in exploring further. Calculate its mean and standard deviation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Mean:  17.570378619153672\n",
+      "SD:  4.4500285099624985\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Mean: \", df[\"Age.Percent 65 and Older\"].mean())\n",
+    "age = df[\"Age.Percent 65 and Older\"]\n",
+    "print(\"SD: \", st.stdev(age))\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Q3: Make two histograms of the data from the column and compare them. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:ylabel='Frequency'>"
+      ]
+     },
+     "execution_count": 42,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "#Seperates the column into two halves and creates a histogram\n",
+    "halfone = age[1:1000]\n",
+    "halftwo = age[1001:2000]\n",
+    "halfone.plot(kind = 'hist')\n",
+    "halftwo.plot(kind='hist')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Comparison:**"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Q4: Make a boxplot of the same column."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:>"
+      ]
+     },
+     "execution_count": 49,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "age.plot(kind=\"box\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Q5: Selecting an additional column, make a scatter plot of both columns. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.collections.PathCollection at 0x7fa07f213310>"
+      ]
+     },
+     "execution_count": 38,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "agesales = df[[\"Age.Percent 65 and Older\", \"Sales.Retail Sales\"]]\n",
+    "x = agesales[\"Age.Percent 65 and Older\"]\n",
+    "y = agesales[\"Sales.Retail Sales\"]\n",
+    "plt.scatter(x,y)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "R",
+   "language": "R",
+   "name": "ir"
+  },
+  "language_info": {
+   "codemirror_mode": "r",
+   "file_extension": ".r",
+   "mimetype": "text/x-r-source",
+   "name": "R",
+   "pygments_lexer": "r",
+   "version": "4.2.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
